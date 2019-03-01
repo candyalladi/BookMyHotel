@@ -1,4 +1,5 @@
 ﻿using BookMyHotel_Tenants.Common.Models;
+using BookMyHotel_Tenants.UserApp.EF.CatalogDB;
 using BookMyHotel_Tenants.UserApp.EF.TenantsDB;
 using System;
 using System.Collections.Generic;
@@ -27,12 +28,12 @@ namespace BookMyHotel_Tenants.Common.Mapper
             };
         }
 
-        public static CityModel ToCountryModel(this Cities city)
+        public static CityModel ToCityModel(this Cities city)
         {
             return new CityModel
             {
-                CityCode = city.CountryCode.Trim(),                
-                CityName = city.CountryName.Trim()
+                CityCode = city.CityCode.Trim(),
+                CityName = city.CityName.Trim()
             };
         }
 
@@ -76,7 +77,7 @@ namespace BookMyHotel_Tenants.Common.Mapper
             };
         }
 
-        public static RoomModel ToSectionModel(this Rooms rooms)
+        public static RoomModel ToRoomModel(this Rooms rooms)
         {
             return new RoomModel
             {
@@ -88,7 +89,7 @@ namespace BookMyHotel_Tenants.Common.Mapper
             };
         }
 
-        public static HotelModel ToHOtelModel(this Hotel hotelModel)
+        public static HotelModel ToHotelModel(this Hotel hotelModel)
         {
             return new HotelModel
             {
@@ -109,8 +110,54 @@ namespace BookMyHotel_Tenants.Common.Mapper
                 HotelType = hotelType.HotelType.Trim(),
                 RoomTypeName = hotelType.RoomTypeName.Trim(),
                 RoomTypeShortName = hotelType.RoomTypeShortName.Trim(),
-                RoomTypeShortNamePlural = hotelType.RoomTypeShortNamePlural.Trim(),                
+                RoomTypeShortNamePlural = hotelType.RoomTypeShortNamePlural.Trim(),
                 HotelTypeName = hotelType.HotelTypeName.Trim()
+            };
+        }
+
+        #endregion
+
+        #region Model to Entity Mapping
+
+        public static Guests ToGuestsEntity(this GuestModel customeModel)
+        {
+            return new Guests
+            {
+                CityCode = customeModel.CityCode,
+                Email = customeModel.Email,
+                FirstName = customeModel.FirstName,
+                LastName = customeModel.LastName,
+                PostalCode = customeModel.PostalCode,
+                GuestId = customeModel.GuestId,
+                RoomId = customeModel.RoomId
+                
+            };
+        }
+
+        public static BookingPurchases ToTicketPurchasesEntity(this BookingPurchaseModel ticketPurchaseModel)
+        {
+            //password not required to save demo friction
+            return new BookingPurchases
+            {
+                GuestId = ticketPurchaseModel.GuestId,
+                BookingDate = DateTime.Now,
+                PurchaseTotal = ticketPurchaseModel.TotalPrice,
+            };
+        }
+
+        public static Bookings ToBookingsEntity(this BookingModel bookingModel)
+        {
+            return new Bookings
+            {
+                BookingPurchaseId = bookingModel.BookingPurchaseId,
+                RoomId = bookingModel.RoomId,
+                GuestId = bookingModel.GuestId,
+                Checkin_Date = bookingModel.Checkin_Date,
+                Checkout_Date = bookingModel.Checkout_Date,
+                RoomName = bookingModel.RoomName,
+                GuestName = bookingModel.GuestName,
+                Payment = bookingModel.Payment,
+                HotelName = bookingModel.HotelName
             };
         }
 

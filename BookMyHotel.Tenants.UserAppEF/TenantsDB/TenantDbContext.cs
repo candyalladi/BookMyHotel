@@ -40,25 +40,25 @@ namespace BookMyHotel_Tenants.UserApp.EF.TenantsDB
             var options = optionsBuilder.UseSqlServer(sqlConn).Options;
 
             return options;
-        }       
-        
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Cities>( entity => 
-            {
-                entity.HasKey(e => e.CityCode)
-                    .HasName("PK__City__5D9B0D2D5E8496A7");
+            modelBuilder.Entity<Cities>(entity =>
+           {
+               entity.HasKey(e => e.CityCode)
+                   .HasName("PK__City__5D9B0D2D5E8496A7");
 
-                entity.HasIndex(e => new { e.CityCode})
-                    .HasName("IX_Countries_Country_Language")
-                    .IsUnique();
+               entity.HasIndex(e => new { e.CityCode })
+                   .HasName("IX_Countries_Country_Language")
+                   .IsUnique();
 
-                entity.Property(e => e.CityCode).HasColumnType("char(3)");
+               entity.Property(e => e.CityCode).HasColumnType("char(3)");
 
-                entity.Property(e => e.CityName)
-                    .IsRequired()
-                    .HasMaxLength(50);               
-            });
+               entity.Property(e => e.CityName)
+                   .IsRequired()
+                   .HasMaxLength(50);
+           });
 
             modelBuilder.Entity<Guests>(entity =>
             {
@@ -126,7 +126,7 @@ namespace BookMyHotel_Tenants.UserApp.EF.TenantsDB
                 entity.Property(e => e.Checkout_Date).HasColumnType("datetime");
 
                 entity.Property(e => e.RoomId).HasColumnType("int");
-                    
+
                 entity.Property(e => e.RoomName)
                     .IsRequired()
                     .HasMaxLength(50);
@@ -250,6 +250,6 @@ namespace BookMyHotel_Tenants.UserApp.EF.TenantsDB
                     .HasColumnType("nchar(30)");
             });
         }
-        
+
     }
 }

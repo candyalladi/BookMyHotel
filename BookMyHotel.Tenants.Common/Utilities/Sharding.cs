@@ -110,7 +110,7 @@ namespace BookMyHotel_Tenants.Common.Utilities
                     var key = _utilities.ConvertIntKeyToBytesArray(pointMapping.Value);
 
                     //get tenant's venue name
-                    var venueDetails = await _tenantRepository.GetHotelDetails(tenantId);
+                    var venueDetails = await _tenantRepository.GetHotelDetailsAsync(tenantId);
 
                     //add tenant to Tenants table
                     var tenant = new Tenants

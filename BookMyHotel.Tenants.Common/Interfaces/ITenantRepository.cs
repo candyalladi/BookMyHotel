@@ -8,21 +8,21 @@ namespace BookMyHotel.Tenants.Common.Interfaces
     {
         #region Cities
 
-        Task<List<CityModel>> GetAllCities(int tenantId);
-        Task<CityModel> GetCity(string cityCode, int tenantId);
+        Task<List<CityModel>> GetAllCitiesAsync(int tenantId);
+        Task<CityModel> GetCityAsync(string cityCode, int tenantId);
 
         #endregion
 
         #region Customers
 
-        Task<int> AddGuest(GuestModel guestModel, int tenantId);
+        Task<int> AddGuestAsync(GuestModel guestModel, int tenantId);
         Task<GuestModel> GetGuest(string email, int tenantId);
 
         #endregion
 
         #region RoomPrices
 
-        Task<List<RoomPriceModel>> GetRoomPrices(int roomId, int tenantId);
+        Task<List<RoomPriceModel>> GetRoomPricesAsync(int roomId, int tenantId);
 
         #endregion
 
@@ -35,8 +35,8 @@ namespace BookMyHotel.Tenants.Common.Interfaces
 
         #region Rooms
 
-        Task<List<RoomModel>> GetRooms(List<int> roomIds, int tenantId);
-        Task<RoomModel> GetRoom(int roomId, int tenantId);
+        Task<List<RoomModel>> GetRoomsAsync(List<int> roomIds, int tenantId);
+        Task<RoomModel> GetRoomAsync(int roomId, int tenantId);
 
         #endregion
 
@@ -55,13 +55,13 @@ namespace BookMyHotel.Tenants.Common.Interfaces
 
         #region Hotels
 
-        Task<HotelModel> GetHotelDetails(int tenantId);
+        Task<HotelModel> GetHotelDetailsAsync(int tenantId);
 
         #endregion
 
         #region HotelTypes
 
-        Task<HotelTypeModel> GetHotelType(string hotelType, int tenantId);
+        Task<HotelTypeModel> GetHotelTypeAsync(string hotelType, int tenantId);
 
         #endregion
 

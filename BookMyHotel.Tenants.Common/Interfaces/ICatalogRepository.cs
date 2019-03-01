@@ -3,13 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using BookMyHotel_Tenants.UserApp.EF.CatalogDB;
 
-namespace BookMyHotel.Tenants.Common.Interfaces
+namespace BookMyHotel_Tenants.Common.Interfaces
 {
     public interface ICatalogRepository
     {
-        Task<List<TenantModel>> GetAllTenants();
-        Task<TenantModel> GetTenant(string tenantName);
+        Task<List<TenantModel>> GetAllTenantsAsync();
+        Task<TenantModel> GetTenantAsync(string tenantName);
         bool Add(Tenants tenant);
     }
 }
