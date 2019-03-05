@@ -48,7 +48,7 @@ namespace BookMyHotel.Tenants.Common.Interfaces
 
         #region Bookings
 
-        Task<bool> AddTickets(List<BookingModel> bookingModel, int tenantId);
+        Task<bool> AddBookings(List<BookingModel> bookingModel, int tenantId);
         Task<int> GetBookingsSold(int sectionId, int eventId, int tenantId);
 
         #endregion

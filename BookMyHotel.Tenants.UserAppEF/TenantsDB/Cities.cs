@@ -8,13 +8,13 @@ namespace BookMyHotel_Tenants.UserApp.EF.TenantsDB
         public Cities()
         {
             Guests = new HashSet<Guests>();
-            Hotel = new HashSet<Hotel>();
+            Hotel = new HashSet<Hotels>();
         }
 
         public string CityCode { get; set; }
         public string CityName { get; set; }
 
         public virtual ICollection<Guests> Guests { get; set; }
-        public virtual ICollection<Hotel> Hotel { get; set; }
+        public virtual ICollection<Hotels> Hotel { get; set; }
     }
 }

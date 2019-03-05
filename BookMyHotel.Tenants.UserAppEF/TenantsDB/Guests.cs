@@ -17,6 +17,7 @@ namespace BookMyHotel_Tenants.UserApp.EF.TenantsDB
         public string PostalCode { get; set; }
         public string CityCode { get; set; }
         public int RoomId { get; set; }
+        public string TenantName { get; set; }
         public byte[] RowVersion { get; set; }
 
         public virtual ICollection<BookingPurchases> BookingPurchases { get; set; }

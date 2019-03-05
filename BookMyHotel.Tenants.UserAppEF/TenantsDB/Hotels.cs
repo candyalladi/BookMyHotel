@@ -1,6 +1,6 @@
 ﻿namespace BookMyHotel_Tenants.UserApp.EF.TenantsDB
 {
-    public partial class Hotel
+    public partial class Hotels
     {
         public int HotelId { get; set; }
         public string HotelName { get; set; }

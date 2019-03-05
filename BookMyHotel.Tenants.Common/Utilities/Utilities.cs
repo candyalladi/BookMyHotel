@@ -1,5 +1,7 @@
 ﻿using BookMyHotel.Tenants.Common.Interfaces;
+using BookMyHotel_Tenants.UserApp.EF.TenantsDbEFCore;
 using Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -55,7 +57,7 @@ namespace BookMyHotel_Tenants.Common.Utilities
                                 context.Database.ExecuteSqlCommand("sp_ResetEventDates");
                             }
                         }
-                        catch (Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.ShardManagementException ex)
+                        catch (ShardManagementException ex)
                         {
                             string errorText;
                             if (ex.ErrorCode == ShardManagementErrorCode.MappingIsOffline)

@@ -6,7 +6,7 @@ namespace BookMyHotel_Tenants.UserApp.EF.TenantsDB
     {
         public HotelTypes()
         {
-            Hotel = new HashSet<Hotel>();
+            Hotel = new HashSet<Hotels>();
         }
 
         public string HotelType { get; set; }
@@ -15,6 +15,6 @@ namespace BookMyHotel_Tenants.UserApp.EF.TenantsDB
         public string RoomTypeShortName { get; set; }
         public string RoomTypeShortNamePlural { get; set; }
 
-        public virtual ICollection<Hotel> Hotel { get; set; }
+        public virtual ICollection<Hotels> Hotel { get; set; }
     }
 }

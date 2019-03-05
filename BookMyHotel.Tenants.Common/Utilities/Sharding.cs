@@ -1,4 +1,6 @@
 ﻿using BookMyHotel.Tenants.Common.Interfaces;
+using BookMyHotel_Tenants.Common.Interfaces;
+using BookMyHotel_Tenants.UserApp.EF.CatalogDB;
 using Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement;
 using System;
 using System.Collections.Generic;

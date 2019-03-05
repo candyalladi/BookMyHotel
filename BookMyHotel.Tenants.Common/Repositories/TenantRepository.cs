@@ -27,9 +27,17 @@ namespace BookMyHotel_Tenants.Common.Repositories
             _connectionString = connectionString;
         }
 
-        public Task<int> AddBookinPurchase(BookingPurchaseModel bookingPurchaseModel, int tenantId)
+        public async Task<int> AddBookinPurchase(BookingPurchaseModel bookingPurchaseModel, int tenantId)
         {
-            throw new NotImplementedException();
+            using (var context = CreateContext(tenantId))
+            {
+                var bookingPurchase = bookingPurchaseModel.ToBookingPurchasesEntity();
+
+                context.BookingPurchases.Add(bookingPurchase);
+                await context.SaveChangesAsync();
+
+                return bookingPurchase.BookingPurchaseId;
+            }
         }
 
         public async Task<int> AddGuestAsync(GuestModel guestModel, int tenantId)
@@ -51,7 +59,7 @@ namespace BookMyHotel_Tenants.Common.Repositories
             {
                 foreach (BookingModel ticketModel in bookingModel)
                 {
-                    context.Tickets.Add(ticketModel.ToBookingsEntity());
+                    context.Bookings.Add(ticketModel.ToBookingsEntity());
                 }
                 await context.SaveChangesAsync();
             }
@@ -68,9 +76,17 @@ namespace BookMyHotel_Tenants.Common.Repositories
             }
         }
 
-        public Task<int> GetBookingsSold(int sectionId, int eventId, int tenantId)
+        public async Task<int> GetBookingsSold(int guestId, int eventId, int tenantId)
         {
-            throw new NotImplementedException();
+            using (var context = CreateContext(tenantId))
+            {
+                var bookings = await context.BookingPurchases.Where(i => i.GuestId == guestId).ToListAsync();
+                if (bookings.Any())
+                {
+                    return bookings.Count();
+                }
+            }
+            return 0;
         }
 
         public async Task<CityModel> GetCityAsync(string cityCode, int tenantId)
@@ -108,7 +124,7 @@ namespace BookMyHotel_Tenants.Common.Repositories
                         databaseServerName = sqlConn.DataSource.Split(':').Last().Split(',').First();
                     }
 
-                    var venue = await context.Hotel.FirstOrDefaultAsync();
+                    var venue = await context.Hotels.FirstOrDefaultAsync();
 
                     if (venue != null)
                     {
@@ -132,14 +148,23 @@ namespace BookMyHotel_Tenants.Common.Repositories
             }
         }
 
-        public Task<OfferModel> GetOffer(int offerId, int tenantId)
+        public async Task<OfferModel> GetOffer(int hotelId, int tenantId)
         {
-            throw new NotImplementedException();
+            using (var context = CreateContext(tenantId))
+            {
+                var offer = await context.Offers.FirstOrDefaultAsync(i => i.HotelId == hotelId);
+                return offer?.ToOfferModel();
+            }
         }
 
-        public Task<List<OfferModel>> GetOffersForTenant(int tenantId)
+        public async Task<List<OfferModel>> GetOffersForTenant(int tenantId)
         {
-            throw new NotImplementedException();
+            using (var context = CreateContext(tenantId))
+            {
+                var offers = await context.Offers.ToListAsync();
+
+                return offers.Count > 0 ? offers.Select(offer => offer.ToOfferModel()).ToList() : null;
+            }
         }
 
         public async Task<RoomModel> GetRoomAsync(int roomId, int tenantId)
@@ -154,7 +179,12 @@ namespace BookMyHotel_Tenants.Common.Repositories
 
         public async Task<List<RoomPriceModel>> GetRoomPricesAsync(int roomId, int tenantId)
         {
-            throw new NotImplementedException();
+            using (var context = CreateContext(tenantId))
+            {
+                var roomPrices = await context.RoomPrices.ToListAsync();
+
+                return roomPrices.Count > 0 ? roomPrices.Select(roomPrice => roomPrice.ToRoomPriceModel()).ToList() : null;
+            }
         }
 
         public async Task<List<RoomModel>> GetRoomsAsync(List<int> roomIds, int tenantId)
@@ -172,6 +202,11 @@ namespace BookMyHotel_Tenants.Common.Repositories
         private TenantDbContext CreateContext(int tenantId)
         {
             return new TenantDbContext(Sharding.ShardMap, tenantId, _connectionString);
+        }
+
+        public Task<bool> AddBookings(List<BookingModel> bookingModel, int tenantId)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

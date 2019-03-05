@@ -4,7 +4,7 @@ namespace BookMyHotel.Tenants.Common.Interfaces
 {
     public interface IUtilities
     {
-        void RegisterTenantShard(TenantServerConfig tenantServerConfig, DatabaseConfig databaseConfig, CatalogConfig catalogConfig, bool resetEventDate);
+        void RegisterTenantShard(TenantServerConfig tenantServerConfig, DatabaseConfig databaseConfig, CatalogConfig catalogConfig, bool resetBookingDate);
 
         byte[] ConvertIntKeyToBytesArray(int key);
 

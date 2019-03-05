@@ -37,6 +37,32 @@ namespace BookMyHotel_Tenants.Common.Mapper
             };
         }
 
+        public static HotelModel ToHotelModel(this Hotels hotelModel)
+        {
+            return new HotelModel
+            {
+                HotelId = hotelModel.HotelId,
+                HotelName = hotelModel.HotelName.Trim(),
+                AdminEmail = hotelModel.AdminEmail.Trim(),
+                AdminPassword = hotelModel.AdminPassword,
+                CityCode = hotelModel.CityCode.Trim(),
+                PostalCode = hotelModel.PostalCode,
+                HotelType = hotelModel.HotelType.Trim()
+            };
+        }
+
+        public static HotelTypeModel ToHotelTypeModel(this HotelTypes hotelType)
+        {
+            return new HotelTypeModel
+            {
+                HotelType = hotelType.HotelType.Trim(),
+                RoomTypeName = hotelType.RoomTypeName.Trim(),
+                RoomTypeShortName = hotelType.RoomTypeShortName.Trim(),
+                RoomTypeShortNamePlural = hotelType.RoomTypeShortNamePlural.Trim(),
+                HotelTypeName = hotelType.HotelTypeName.Trim()
+            };
+        }
+
         public static GuestModel ToCustomerModel(this Guests customer)
         {
             return new GuestModel
@@ -46,11 +72,13 @@ namespace BookMyHotel_Tenants.Common.Mapper
                 PostalCode = customer.PostalCode,
                 LastName = customer.LastName,
                 CityCode = customer.CityCode,
-                GuestId = customer.GuestId
+                GuestId = customer.GuestId,
+                RoomId = customer.RoomId,
+                TenantName = customer.TenantName
             };
         }
 
-        public static RoomPriceModel ToEventSectionModel(this RoomPrices roomPrices)
+        public static RoomPriceModel ToRoomPriceModel(this RoomPrices roomPrices)
         {
             return new RoomPriceModel
             {
@@ -60,7 +88,7 @@ namespace BookMyHotel_Tenants.Common.Mapper
             };
         }
 
-        public static BookingModel ToEventModel(this Bookings bookingsEntity)
+        public static BookingModel ToBookingModel(this Bookings bookingsEntity)
         {
             return new BookingModel
             {
@@ -89,35 +117,91 @@ namespace BookMyHotel_Tenants.Common.Mapper
             };
         }
 
-        public static HotelModel ToHotelModel(this Hotel hotelModel)
+        public static OfferModel ToOfferModel(this Offers offers)
         {
-            return new HotelModel
+            return new OfferModel
             {
-                HotelId = hotelModel.HotelId,
-                HotelName = hotelModel.HotelName.Trim(),
-                AdminEmail = hotelModel.AdminEmail.Trim(),
-                AdminPassword = hotelModel.AdminPassword,
-                CityCode = hotelModel.CityCode.Trim(),
-                PostalCode = hotelModel.PostalCode,
-                HotelType = hotelModel.HotelType.Trim()
+                OfferId = offers.OfferId,
+                OfferValidTillDate = offers.OfferValidTillDate,
+                Discount = offers.Discount,
+                HotelId = offers.HotelId,
+                IsOfferAvailable = offers.IsOfferAvailable,
+                OfferDays = offers.OfferDays
             };
         }
 
-        public static HotelTypeModel ToHotelTypeModel(this HotelTypes hotelType)
+        public static BookingPurchaseModel ToBookingPurchaseModel(this BookingPurchaseModel bookingPurchaseModel)
         {
-            return new HotelTypeModel
+            return new BookingPurchaseModel
             {
-                HotelType = hotelType.HotelType.Trim(),
-                RoomTypeName = hotelType.RoomTypeName.Trim(),
-                RoomTypeShortName = hotelType.RoomTypeShortName.Trim(),
-                RoomTypeShortNamePlural = hotelType.RoomTypeShortNamePlural.Trim(),
-                HotelTypeName = hotelType.HotelTypeName.Trim()
+                BookingPurchaseId = bookingPurchaseModel.BookingPurchaseId,
+                BookedDate = bookingPurchaseModel.BookedDate,
+                TotalPrice = bookingPurchaseModel.TotalPrice,
+                GuestId = bookingPurchaseModel.GuestId,
+                OfferId = bookingPurchaseModel.OfferId
             };
         }
 
         #endregion
 
         #region Model to Entity Mapping
+
+        public static Cities ToCitiesEntity(this CityModel cityModel)
+        {
+            return new Cities
+            {
+                CityCode = cityModel.CityCode,
+                CityName = cityModel.CityName
+            };
+        }
+
+        public static Hotels ToHotelEntity(this HotelModel hotelModel)
+        {
+            return new Hotels
+            {
+                HotelId = hotelModel.HotelId,
+                HotelName = hotelModel.HotelName,
+                AdminEmail = hotelModel.AdminEmail,
+                AdminPassword = hotelModel.AdminPassword,
+                PostalCode = hotelModel.PostalCode,
+                CityCode = hotelModel.CityCode,
+                HotelType = hotelModel.CityCode
+            };
+        }
+
+        public static HotelTypes ToHotelTypesEntity(this HotelTypeModel hotelTypeModel)
+        {
+            return new HotelTypes
+            {
+                HotelType = hotelTypeModel.HotelType,
+                HotelTypeName = hotelTypeModel.HotelTypeName,
+                RoomTypeName = hotelTypeModel.RoomTypeName,
+                RoomTypeShortName = hotelTypeModel.RoomTypeShortName,
+                RoomTypeShortNamePlural = hotelTypeModel.RoomTypeShortNamePlural
+            };
+        }
+
+        public static Rooms ToRoomsEntity(this RoomModel roomModel)
+        {
+            return new Rooms
+            {
+                RoomId = roomModel.RoomId,
+                RoomName = roomModel.RoomName,
+                RoomType = roomModel.RoomType,
+                HotelId = roomModel.HotelId,
+                StandardPrice = roomModel.StandardPrice
+            };
+        }
+
+        public static RoomPrices ToRoomPricesEntity(this RoomPriceModel roomPriceModel)
+        {
+            return new RoomPrices
+            {
+                HotelId = roomPriceModel.HotelId,
+                RoomId = roomPriceModel.RoomId,
+                Price = roomPriceModel.Price
+            };
+        }
 
         public static Guests ToGuestsEntity(this GuestModel customeModel)
         {
@@ -129,12 +213,12 @@ namespace BookMyHotel_Tenants.Common.Mapper
                 LastName = customeModel.LastName,
                 PostalCode = customeModel.PostalCode,
                 GuestId = customeModel.GuestId,
-                RoomId = customeModel.RoomId
-                
+                RoomId = customeModel.RoomId,
+                TenantName = customeModel.TenantName
             };
         }
 
-        public static BookingPurchases ToTicketPurchasesEntity(this BookingPurchaseModel ticketPurchaseModel)
+        public static BookingPurchases ToBookingPurchasesEntity(this BookingPurchaseModel ticketPurchaseModel)
         {
             //password not required to save demo friction
             return new BookingPurchases
@@ -142,6 +226,7 @@ namespace BookMyHotel_Tenants.Common.Mapper
                 GuestId = ticketPurchaseModel.GuestId,
                 BookingDate = DateTime.Now,
                 PurchaseTotal = ticketPurchaseModel.TotalPrice,
+                BookingPurchaseId = ticketPurchaseModel.BookingPurchaseId
             };
         }
 
@@ -149,6 +234,7 @@ namespace BookMyHotel_Tenants.Common.Mapper
         {
             return new Bookings
             {
+                BookingId = bookingModel.BookingId,
                 BookingPurchaseId = bookingModel.BookingPurchaseId,
                 RoomId = bookingModel.RoomId,
                 GuestId = bookingModel.GuestId,
@@ -158,6 +244,19 @@ namespace BookMyHotel_Tenants.Common.Mapper
                 GuestName = bookingModel.GuestName,
                 Payment = bookingModel.Payment,
                 HotelName = bookingModel.HotelName
+            };
+        }
+
+        public static Offers ToOffersEntity(this OfferModel offerModel)
+        {
+            return new Offers
+            {
+                OfferId = offerModel.OfferId,
+                OfferValidTillDate = offerModel.OfferValidTillDate,
+                Discount = offerModel.Discount,
+                HotelId = offerModel.HotelId,
+                IsOfferAvailable = offerModel.IsOfferAvailable,
+                OfferDays = offerModel.OfferDays
             };
         }
 

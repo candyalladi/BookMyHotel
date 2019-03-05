@@ -55,7 +55,7 @@ namespace BookMyHotel_Tenants.Common.Utilities
     {
         public int TenantId { get; set; }
         public string HotelName { get; set; }
-        public string RoomTypeNamePlural { get; set; }
+        public string HotelTypeNamePlural { get; set; }
         public string BlobImagePath { get; set; }
         public string TenantName { get; set; }
         public string Currency { get; set; }

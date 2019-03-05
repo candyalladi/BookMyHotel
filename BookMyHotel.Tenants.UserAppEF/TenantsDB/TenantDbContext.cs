@@ -10,13 +10,14 @@ namespace BookMyHotel_Tenants.UserApp.EF.TenantsDB
     public partial class TenantDbContext : DbContext
     {
         public virtual DbSet<Cities> Cities { get; set; }
-        public virtual DbSet<Guests> Guests { get; set; }
-        public virtual DbSet<RoomPrices> RoomPrices { get; set; }
-        public virtual DbSet<Rooms> Rooms { get; set; }
-        public virtual DbSet<BookingPurchases> BookingPurchases { get; set; }
-        public virtual DbSet<Bookings> Tickets { get; set; }
-        public virtual DbSet<Hotel> Hotel { get; set; }
+        public virtual DbSet<Hotels> Hotels { get; set; }
         public virtual DbSet<HotelTypes> HotelTypes { get; set; }
+        public virtual DbSet<Rooms> Rooms { get; set; }
+        public virtual DbSet<RoomPrices> RoomPrices { get; set; }
+        public virtual DbSet<Guests> Guests { get; set; }
+        public virtual DbSet<BookingPurchases> BookingPurchases { get; set; }
+        public virtual DbSet<Bookings> Bookings { get; set; }
+        public virtual DbSet<Offers> Offers { get; set; }
 
         public TenantDbContext(ShardMap shardMap, int shardingKey, string connectionStr) :
             base(CreateDdrConnection(shardMap, shardingKey, connectionStr))
@@ -59,6 +60,105 @@ namespace BookMyHotel_Tenants.UserApp.EF.TenantsDB
                    .IsRequired()
                    .HasMaxLength(50);
            });
+
+            modelBuilder.Entity<Hotels>(entity =>
+            {
+                entity.HasKey(e => e.Lock)
+                    .HasName("PK_Hotel");
+
+                entity.Property(e => e.Lock)
+                    .HasColumnType("char(1)")
+                    .HasDefaultValueSql("'X'");
+
+                entity.Property(e => e.AdminEmail)
+                    .IsRequired()
+                    .HasColumnType("varchar(50)");
+
+                entity.Property(e => e.AdminPassword).HasColumnType("nchar(30)");
+
+                entity.Property(e => e.CityCode)
+                    .IsRequired()
+                    .HasColumnType("char(3)");
+
+                entity.Property(e => e.PostalCode).HasColumnType("char(10)");
+
+                entity.Property(e => e.HotelName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.HotelType)
+                    .IsRequired()
+                    .HasColumnType("char(30)");
+
+                entity.HasOne(d => d.CityCodeNavigation)
+                    .WithMany(p => p.Hotel)
+                    .HasForeignKey(d => d.CityCode)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Hotel_Cities");
+
+                entity.HasOne(d => d.HotelTypeNavigation)
+                    .WithMany(p => p.Hotel)
+                    .HasForeignKey(d => d.HotelType)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Venues_VenueTypes");
+            });
+
+            modelBuilder.Entity<HotelTypes>(entity =>
+            {
+                entity.HasKey(e => e.HotelType)
+                    .HasName("PK__HotelTyp__265E44FD9586CE48");
+
+                entity.HasIndex(e => new { e.HotelTypeName })
+                    .IsUnique();
+
+                entity.Property(e => e.HotelType).HasColumnType("char(30)");
+
+                entity.Property(e => e.RoomTypeName)
+                    .IsRequired()
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.RoomTypeShortName)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.RoomTypeShortNamePlural)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.HotelTypeName)
+                    .IsRequired()
+                    .HasColumnType("nchar(30)");
+            });
+
+            modelBuilder.Entity<Rooms>(entity =>
+            {
+                entity.HasKey(e => e.RoomId)
+                    .HasName("PK__Rooms__80EF0872FD27B716");
+
+                entity.Property(e => e.HotelId).HasColumnType("int");
+
+                entity.Property(e => e.RoomType).HasColumnType("char(3)");
+
+                entity.Property(e => e.RoomName)
+                    .IsRequired()
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.StandardPrice)
+                    .HasColumnType("money")
+                    .HasDefaultValueSql("10");
+            });
+
+            modelBuilder.Entity<RoomPrices>(entity =>
+            {
+                entity.HasKey(e => e.RoomId)
+                    .HasName("PK__Rooms__80EF0872FD27B716");
+
+                entity.Property(e => e.HotelId).HasColumnType("int");
+
+                entity.Property(e => e.Price)
+                    .HasColumnType("money")
+                    .HasDefaultValueSql("10");
+            });
 
             modelBuilder.Entity<Guests>(entity =>
             {
@@ -145,24 +245,6 @@ namespace BookMyHotel_Tenants.UserApp.EF.TenantsDB
                 entity.Property(e => e.BookingPurchaseId).HasColumnType("int");
             });
 
-            modelBuilder.Entity<Rooms>(entity =>
-            {
-                entity.HasKey(e => e.RoomId)
-                    .HasName("PK__Rooms__80EF0872FD27B716");
-
-                entity.Property(e => e.HotelId).HasColumnType("int");
-
-                entity.Property(e => e.RoomType).HasColumnType("char(3)");
-
-                entity.Property(e => e.RoomName)
-                    .IsRequired()
-                    .HasMaxLength(30);
-
-                entity.Property(e => e.StandardPrice)
-                    .HasColumnType("money")
-                    .HasDefaultValueSql("10");
-            });
-
             modelBuilder.Entity<BookingPurchases>(entity =>
             {
                 entity.HasKey(e => e.BookingPurchaseId)
@@ -179,75 +261,6 @@ namespace BookMyHotel_Tenants.UserApp.EF.TenantsDB
                     .HasForeignKey(d => d.GuestId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_BookingPurchases_Customers");
-            });
-
-            modelBuilder.Entity<Hotel>(entity =>
-            {
-                entity.HasKey(e => e.Lock)
-                    .HasName("PK_Hotel");
-
-                entity.Property(e => e.Lock)
-                    .HasColumnType("char(1)")
-                    .HasDefaultValueSql("'X'");
-
-                entity.Property(e => e.AdminEmail)
-                    .IsRequired()
-                    .HasColumnType("varchar(50)");
-
-                entity.Property(e => e.AdminPassword).HasColumnType("nchar(30)");
-
-                entity.Property(e => e.CityCode)
-                    .IsRequired()
-                    .HasColumnType("char(3)");
-
-                entity.Property(e => e.PostalCode).HasColumnType("char(10)");
-
-                entity.Property(e => e.HotelName)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.HotelType)
-                    .IsRequired()
-                    .HasColumnType("char(30)");
-
-                entity.HasOne(d => d.CityCodeNavigation)
-                    .WithMany(p => p.Hotel)
-                    .HasForeignKey(d => d.CityCode)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_Hotel_Cities");
-
-                entity.HasOne(d => d.HotelTypeNavigation)
-                    .WithMany(p => p.Hotel)
-                    .HasForeignKey(d => d.HotelType)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_Venues_VenueTypes");
-            });
-
-            modelBuilder.Entity<HotelTypes>(entity =>
-            {
-                entity.HasKey(e => e.HotelType)
-                    .HasName("PK__HotelTyp__265E44FD9586CE48");
-
-                entity.HasIndex(e => new { e.HotelTypeName })
-                    .IsUnique();
-
-                entity.Property(e => e.HotelType).HasColumnType("char(30)");
-
-                entity.Property(e => e.RoomTypeName)
-                    .IsRequired()
-                    .HasMaxLength(30);
-
-                entity.Property(e => e.RoomTypeShortName)
-                    .IsRequired()
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.RoomTypeShortNamePlural)
-                    .IsRequired()
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.HotelTypeName)
-                    .IsRequired()
-                    .HasColumnType("nchar(30)");
             });
         }
 
