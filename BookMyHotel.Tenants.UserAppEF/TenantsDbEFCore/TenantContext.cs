@@ -32,7 +32,7 @@ namespace BookMyHotel_Tenants.UserApp.EF.TenantsDbEFCore
             return options;
         }
 
-        public virtual DbSet<RoomsWithNoBookings> EventsWithNoTickets { get; set; }
+        public virtual DbSet<RoomsWithNoBookings> RoomsWithNoBookings { get; set; }
         public virtual DbSet<database_firewall_rules> database_firewall_rules { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

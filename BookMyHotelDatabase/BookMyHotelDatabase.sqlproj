@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>BookMyHotelDatabase</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{4f313497-fc4c-4689-92a2-638e68de2fd1}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>BookMyHotelDatabase</RootNamespace>
+    <AssemblyName>BookMyHotelDatabase</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="CatalogDb" />
+    <Folder Include="CatalogDb\dbo" />
+    <Folder Include="CatalogDb\dbo\Tables" />
+    <Folder Include="CatalogDb\dbo\Views" />
+    <Folder Include="TenantDb" />
+    <Folder Include="TenantDb\dbo" />
+    <Folder Include="TenantDb\DemoScripts" />
+    <Folder Include="TenantDb\SetupScripts" />
+    <Folder Include="TenantDb\dbo\StoredProcedures" />
+    <Folder Include="TenantDb\dbo\Tables" />
+    <Folder Include="TenantDb\dbo\Views" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="CatalogDb\dbo\Tables\Create_Databases.sql" />
+    <Build Include="CatalogDb\dbo\Tables\Create_ElasticPools.sql" />
+    <Build Include="CatalogDb\dbo\Tables\Create_Servers.sql" />
+    <Build Include="CatalogDb\dbo\Tables\Create_Tenants.sql" />
+    <Build Include="TenantDb\dbo\StoredProcedures\sp_CpuLoadGenerator.sql" />
+    <Build Include="TenantDb\dbo\StoredProcedures\sp_DeleteBookings.sql" />
+    <Build Include="TenantDb\dbo\StoredProcedures\sp_RemoveShardManagement.sql" />
+    <Build Include="TenantDb\dbo\StoredProcedures\sp_ResetBookingDates.sql" />
+    <Build Include="TenantDb\dbo\StoredProcedures\sp_SaveLastCopiedRowVersion.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TenantDb\DemoScripts\UpdateHotelTypes.sql" />
+    <None Include="TenantDb\SetupScripts\PramatiHotel.sql" />
+    <None Include="TenantDb\SetupScripts\NovatelHotel.sql" />
+    <None Include="TenantDb\SetupScripts\HiltonHotel.sql" />
+    <None Include="TenantDb\SetupScripts\PostDeployment.sql" />
+    <None Include="CatalogDb\dbo\Views\TenantsExtended.sql" />
+    <None Include="TenantDb\dbo\Tables\Bookings.sql" />
+    <None Include="TenantDb\dbo\Tables\BookingPurchases.sql" />
+    <None Include="TenantDb\dbo\Tables\Cities.sql" />
+    <None Include="TenantDb\dbo\Tables\CopyTracker.sql" />
+    <None Include="TenantDb\dbo\Tables\Guests.sql" />
+    <None Include="TenantDb\dbo\Tables\Hotel.sql" />
+    <None Include="TenantDb\dbo\Tables\Offers.sql" />
+    <None Include="TenantDb\dbo\Tables\HotelTypes.sql" />
+    <None Include="TenantDb\dbo\Tables\LastExtracted.sql" />
+    <None Include="TenantDb\dbo\Tables\RoomPrices.sql" />
+    <None Include="TenantDb\dbo\Tables\Rooms.sql" />
+    <None Include="TenantDb\dbo\Views\BookingsFacts.sql" />
+    <None Include="TenantDb\dbo\Views\rawGuests.sql" />
+    <None Include="TenantDb\dbo\Views\HotelBookingPurchases.sql" />
+    <None Include="TenantDb\dbo\Views\HotelBookings.sql" />
+    <None Include="TenantDb\dbo\Views\Hotels.sql" />
+    <None Include="TenantDb\dbo\Views\rawBookings.sql" />
+    <None Include="TenantDb\dbo\Views\rawHotels.sql" />
+    <None Include="TenantDb\dbo\Views\RoomsWithNoBookings.sql" />
+    <None Include="TenantDb\dbo\Views\HotelOffers.sql" />
+  </ItemGroup>
+</Project>

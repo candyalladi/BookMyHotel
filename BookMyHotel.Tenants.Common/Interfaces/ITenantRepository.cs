@@ -13,7 +13,7 @@ namespace BookMyHotel.Tenants.Common.Interfaces
 
         #endregion
 
-        #region Customers
+        #region Guests
 
         Task<int> AddGuestAsync(GuestModel guestModel, int tenantId);
         Task<GuestModel> GetGuest(string email, int tenantId);
