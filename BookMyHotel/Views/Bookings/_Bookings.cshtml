@@ -1,0 +1,41 @@
+﻿@using System.Security.Policy
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<div class="row spacer-25">
+</div>
+@{
+    if (Model != null)
+    {
+        var bookingIndex = 0;
+
+        foreach (var booking in Model)
+        {
+            <div class="event-block">
+                <div class="@(bookingIndex % 2 == 0 ? "checkin-date" : "checkin-date checkin-date-shaded")">
+                    <span class="event-date-top">@booking.Checkin_Date.ToString("MMM").ToUpper()</span><br />
+                    <span class="event-date-mid">@booking.Checkin_Date.Day</span><br />
+                    <span class="event-date-btm">@booking.Checkin_Date.DayOfWeek.ToString().ToUpper().Substring(0, 3)</span><br />
+                </div>
+                <div class="@(bookingIndex % 2 == 0 ? "checkout-date" : "checkout-date checkout-date-shaded")">
+                    <span class="event-date-top">@booking.Checkout_Date.ToString("MMM").ToUpper()</span><br />
+                    <span class="event-date-mid">@booking.Checkout_Date.Day</span><br />
+                    <span class="event-date-btm">@booking.Checkout_Date.DayOfWeek.ToString().ToUpper().Substring(0, 3)</span><br />
+                </div>
+                <div class="booking-info">
+                    <h3 class="guest">@booking.GuestName</h3>
+                    <p class="room-hotel">@booking.RoomName</p>
+                    <p class="room-hotel">@booking.HotelName</p>
+                    <p class="room-hotel">@booking.BookingId</p>
+                </div>
+                <div class="event-button">
+                    @{
+                        var ticketText = @Localizer["Bookings"];
+                    }
+                    @Html.ActionLink(ticketText.Value, "FindRooms", "FindRooms", new { eventId = booking.BookingId }, new { @class = "btn btn-themed-secondary" })
+                </div>
+            </div>
+
+            bookingIndex++;
+        }
+    }
+}

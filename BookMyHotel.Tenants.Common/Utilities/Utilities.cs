@@ -54,14 +54,14 @@ namespace BookMyHotel_Tenants.Common.Utilities
                             //use EF6 since execution of Stored Procedure in EF Core for anonymous return type is not supported yet
                             using (var context = new TenantContext(Sharding.ShardMap, tenantId, connectionString.ConnectionString))
                             {
-                                context.Database.ExecuteSqlCommand("sp_ResetEventDates");
+                                context.Database.ExecuteSqlCommand("sp_ResetBookingDates");
                             }
                         }
                         catch (ShardManagementException ex)
                         {
                             string errorText;
                             if (ex.ErrorCode == ShardManagementErrorCode.MappingIsOffline)
-                                errorText = "Tenant '" + tenant + "' is offline. Could not reset event dates:" + ex.ToString();
+                                errorText = "Tenant '" + tenant + "' is offline. Could not reset booking dates:" + ex.ToString();
                             else
                                 errorText = ex.ToString();
                             Console.WriteLine(errorText);

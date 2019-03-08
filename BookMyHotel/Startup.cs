@@ -18,6 +18,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Internal;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -214,10 +216,10 @@ namespace BookMyHotel
                 TenantServer = Configuration["TenantServer"] + ".database.windows.net"
             };
 
-            bool isResetEventDatesEnabled = false;
-            if (bool.TryParse(Configuration["ResetEventDates"], out isResetEventDatesEnabled))
+            bool isResetBookingDatesEnabled = false;
+            if (bool.TryParse(Configuration["ResetBookingDates"], out isResetBookingDatesEnabled))
             {
-                TenantServerConfig.ResetBookingDates = isResetEventDatesEnabled;
+                TenantServerConfig.ResetBookingDates = isResetBookingDatesEnabled;
             }
         }
 

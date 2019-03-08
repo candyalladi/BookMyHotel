@@ -8,6 +8,10 @@ namespace BookMyHotel_Tenants.Common.Models
 
         public string HotelName { get; set; }
 
+        public int NumberOfFloors { get; set; }
+
+        public int RoomsPerFloor { get; set; }
+
         public string AdminEmail { get; set; }
 
         [DataType(DataType.Password)]
