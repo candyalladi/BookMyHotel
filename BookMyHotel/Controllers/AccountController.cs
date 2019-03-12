@@ -88,7 +88,7 @@ namespace BookMyHotel.Controllers
                 _logger.LogError(0, ex, "Login failed for tenant {tenant}", tenant);
                 return View("TenantError", tenant);
             }
-            return Redirect(Request.Headers["Referer"].ToString());
+            return RedirectToAction("Home");// (Request.Headers["Referer"].ToString());
         }
 
         [Route("Logout")]
@@ -108,7 +108,7 @@ namespace BookMyHotel.Controllers
                 _logger.LogError(0, ex, "Log out failed for tenant {tenant}", tenant);
                 return View("TenantError", tenant);
             }
-            return RedirectToAction("Index", "Events", new { tenant });
+            return RedirectToAction("Index", "Bookings", new { tenant });
         }
 
         [HttpPost]
@@ -119,7 +119,7 @@ namespace BookMyHotel.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return RedirectToAction("Index", "Events", new { tenant });
+                    return RedirectToAction("Index", "Bookings", new { tenant });
                 }
 
                 var tenantDetails = (_catalogRepository.GetTenantAsync(tenant)).Result;
@@ -167,7 +167,7 @@ namespace BookMyHotel.Controllers
                 _logger.LogError(0, ex, "Registration failed for tenant {tenant}", tenant);
                 return View("TenantError", tenant);
             }
-            return Redirect(Request.Headers["Referer"].ToString());
+            return RedirectToAction("Referer");// (Request.Headers["Referer"].ToString());
         }
     }
 }

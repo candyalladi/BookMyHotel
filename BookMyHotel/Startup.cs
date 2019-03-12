@@ -1,30 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using BookMyHotel.Tenants.Common.Interfaces;
+﻿using BookMyHotel.Tenants.Common.Interfaces;
 using BookMyHotel.ViewModels;
 using BookMyHotel_Tenants.Common.Interfaces;
 using BookMyHotel_Tenants.Common.Repositories;
 using BookMyHotel_Tenants.Common.Utilities;
 using BookMyHotel_Tenants.UserApp.EF.CatalogDB;
 using DnsClient;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Internal;
-using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Globalization;
+using System.Linq;
 
 namespace BookMyHotel
 {
@@ -69,6 +64,9 @@ namespace BookMyHotel
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddDataAnnotationsLocalization();
+
+            services.AddMvcCore()
+                .AddDataAnnotations();
 
             // Adds a default in-memory implementation of IDistributedCache.
             services.AddDistributedMemoryCache();

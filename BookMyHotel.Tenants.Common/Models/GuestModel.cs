@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -9,7 +10,9 @@ namespace BookMyHotel_Tenants.Common.Models
     {
         public int GuestId { get; set; }
 
+        [BindProperty]
         [Required]
+        [MinLength(50)]
         public string FirstName { get; set; }
 
         [Required]

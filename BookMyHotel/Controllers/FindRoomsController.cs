@@ -79,10 +79,10 @@ namespace BookMyHotel.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(0, ex, "FindSeats failed for tenant {tenant} and event {eventId}", tenant, eventId);
+                _logger.LogError(0, ex, "FindRooms failed for tenant {tenant} and booking {eventId}", tenant, eventId);
                 return View("TenantError", tenant);
             }
-            return RedirectToAction("Index", "Events", new { tenant });
+            return RedirectToAction("Index", "Bookings", new { tenant });
         }
 
         [Route("GetAvailableSeats")]
@@ -116,8 +116,8 @@ namespace BookMyHotel.Controllers
         }
 
         [HttpPost]
-        [Route("PurchaseTickets")]
-        public async Task<ActionResult> PurchaseTickets(string tenant, int eventId, int customerId, decimal ticketPrice, int ticketCount, int sectionId)
+        [Route("Bookings")]
+        public async Task<ActionResult> Bookings(string tenant, int bookingId, int guestId, decimal roomPrice, int roomsCount, int roomId)
         {
             try
             {
@@ -125,8 +125,8 @@ namespace BookMyHotel.Controllers
 
                 var ticketPurchaseModel = new BookingPurchaseModel
                 {
-                    GuestId = customerId,
-                    TotalPrice = ticketPrice
+                    GuestId = guestId,
+                    TotalPrice = roomPrice
                 };
 
                 var tenantDetails = (_catalogRepository.GetTenantAsync(tenant)).Result;
@@ -134,13 +134,13 @@ namespace BookMyHotel.Controllers
                 {
                     SetTenantConfig(tenantDetails.TenantId, tenantDetails.TenantIdInString);
 
-                    var purchaseTicketId = await _tenantRepository.AddBookinPurchase(ticketPurchaseModel, tenantDetails.TenantId);
+                    var bookingsPurchaseId = await _tenantRepository.AddBookinPurchase(ticketPurchaseModel, tenantDetails.TenantId);
 
-                    List<BookingModel> ticketsModel = BuildTicketModel(eventId, sectionId, ticketCount, purchaseTicketId);
+                    List<BookingModel> ticketsModel = BuildTicketModel(bookingId, roomId, roomsCount, bookingsPurchaseId);
                     purchaseResult = await _tenantRepository.AddBookings(ticketsModel, tenantDetails.TenantId);
 
                     if (purchaseResult)
-                        DisplayMessage(_localizer[$"You have successfully booked {ticketCount} rooms(s)."], "Confirmation");
+                        DisplayMessage(_localizer[$"You have successfully booked {roomsCount} rooms(s)."], "Confirmation");
                     else
                         DisplayMessage(_localizer["Failed to book rooms."], "Error");
                 }
@@ -151,7 +151,7 @@ namespace BookMyHotel.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(0, ex, "Booking rooms failed for tenant {tenant} and room {roomId}", tenant, eventId);
+                _logger.LogError(0, ex, "Booking rooms failed for tenant {tenant} and room {roomId}", tenant, bookingId);
                 return View("TenantError", tenant);
             }
             return RedirectToAction("Index", "Bookings", new { tenant });

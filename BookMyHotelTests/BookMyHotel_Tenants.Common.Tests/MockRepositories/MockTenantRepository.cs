@@ -175,7 +175,7 @@ namespace BookMyHotelTests.BookMyHotel_Tenants.Common.Tests
         {
             foreach (BookingModel bookingModel in bookingModels)
             {
-                bookingModels.Add(bookingModel);
+                BookingModels.Add(bookingModel);
             }
             return true;
         }
@@ -194,7 +194,9 @@ namespace BookMyHotelTests.BookMyHotel_Tenants.Common.Tests
                 HotelName = "Pramati",
                 PostalCode = "123",
                 AdminEmail = "admin@email.com",
-                AdminPassword = "password"
+                AdminPassword = "password",
+                DatabaseName = "HotelDB",
+                DatabaseServerName = @"PRINHYLTPDL1249\SQLEXPRESS"
             };
         }
 

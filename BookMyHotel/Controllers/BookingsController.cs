@@ -74,7 +74,7 @@ namespace BookMyHotel.Controllers
                             else
                             {
                                 var pairedRegion = (serverRegion.Split('-'))[0].Split('1')[0];
-                                String recoveryAppInstance = "https://events-wingtip-dpt-" + pairedRegion + "-" + _configuration["User"] + ".azurewebsites.net/" + tenant;
+                                String recoveryAppInstance = "https://bookings-wingtip-dpt-" + pairedRegion + "-" + _configuration["User"] + ".azurewebsites.net/" + tenant;
                                 return Redirect(recoveryAppInstance);
                             }
                         }

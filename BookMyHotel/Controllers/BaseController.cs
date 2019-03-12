@@ -85,19 +85,16 @@ namespace BookMyHotel.Controllers
                     }
                 }
 
-                //localisation per venue's language
-                Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(tenantConfig.TenantCulture);
-                Thread.CurrentThread.CurrentUICulture = new CultureInfo(tenantConfig.TenantCulture);
             }
         }
 
         /// <summary>
         /// This method will return the tickets model that will be used for the database inserts
         /// </summary>
-        /// <param name="eventId">The tenant identifier.</param>
-        /// <param name="sectionId">Section Id for the tickets.</param>
-        /// <param name="numberOfTickets">Count of tickets.</param>
-        /// <param name="purchaseTicketId">Parent id for which the tickets should be tied to</param>
+        /// <param name="bookingId">The tenant identifier.</param>
+        /// <param name="roomId">Section Id for the tickets.</param>
+        /// <param name="numberOfRooms">Count of tickets.</param>
+        /// <param name="bookingPurchaseId">Parent id for which the tickets should be tied to</param>
         /// <returns></returns>
         protected List<BookingModel> BuildTicketModel(int bookingId, int roomId, int numberOfRooms, int bookingPurchaseId)
         {
@@ -109,7 +106,7 @@ namespace BookMyHotel.Controllers
                     RoomId = roomId,
                     BookingId = bookingId,
                     BookingPurchaseId = bookingPurchaseId,
-                    RoomName = $"{roomId}{bookingId}{bookingPurchaseId}", // ensures that the ticket purchased  row number is always unique
+                    RoomName = $"{roomId}{bookingId}{bookingPurchaseId}", // ensures that the room name is always unique
                     GuestId = i + 1
                 });
             }

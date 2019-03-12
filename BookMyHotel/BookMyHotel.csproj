@@ -49,4 +49,8 @@
     <ProjectReference Include="..\BookMyHotel.Tenants.UserAppEF\BookMyHotel_Tenants.UserApp.EF.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\fonts\" />
+  </ItemGroup>
+
 </Project>

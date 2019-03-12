@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
+using Xunit;
+using Assert = Xunit.Assert;
 
 namespace BookMyHotelTests.BookMyHotel_Tenants.Common.Tests.ShardingTests
 {
@@ -16,7 +18,7 @@ namespace BookMyHotelTests.BookMyHotel_Tenants.Common.Tests.ShardingTests
     {
         #region Private fields
 
-        internal const string TestServer = @"localhost";
+        internal const string TestServer = @"PRINHYLTPDL1249\SQLEXPRESS";
         internal const string ShardMapManagerTestConnectionString = "Data Source=" + TestServer + ";Integrated Security=True;";
 
         private const string CreateDatabaseQueryFormat =
@@ -32,8 +34,7 @@ namespace BookMyHotelTests.BookMyHotel_Tenants.Common.Tests.ShardingTests
 
         #endregion
 
-        [Xunit.Fact]
-        public void Setup()
+        public ShardingTests()
         {
             _catalogConfig = new CatalogConfig
             {
@@ -88,22 +89,20 @@ namespace BookMyHotelTests.BookMyHotel_Tenants.Common.Tests.ShardingTests
                 {
                     cmd.ExecuteNonQuery();
                 }
-
             }
             #endregion
-
         }
-
-        [TestMethod]
+        
+        [Fact]
         public void ShardingTest()
         {
             var sharding = new Sharding(_catalogConfig.CatalogDatabase, _connectionString, _mockCatalogRepo, _mockTenantRepo, _mockUtilities.Object);
 
-            Assert.IsNotNull(sharding);
-            Assert.IsNotNull(sharding.ShardMapManager);
+            Assert.NotNull(sharding);
+            Assert.NotNull(sharding.ShardMapManager);
         }
 
-        [TestMethod]
+        [Fact]
         public async void RegisterShardTest()
         {
             _databaseConfig = new DatabaseConfig
@@ -112,9 +111,9 @@ namespace BookMyHotelTests.BookMyHotel_Tenants.Common.Tests.ShardingTests
             };
 
             var sharding = new Sharding(_catalogConfig.CatalogDatabase, _connectionString, _mockCatalogRepo, _mockTenantRepo, _mockUtilities.Object);
-            var result = await Sharding.RegisterNewShard("TestTenant", 1368421345, TestServer, _databaseConfig.DatabaseServerPort, _catalogConfig.ServicePlan);
+            var result = await Sharding.RegisterNewShard("TestTenant", 1, TestServer, 1433, _catalogConfig.ServicePlan);
 
-            Assert.IsTrue(result);
+            Assert.True(result);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace BookMyHotel_Tenants.UserApp.EF.TenantsDB
     public class Offers
     {
         public int OfferId { get; set; }
-        public int OfferValidTillDate { get; set; }
+        public DateTime OfferValidTillDate { get; set; }
         public decimal Discount { get; set; }
         public int HotelId { get; set; }
         public bool IsOfferAvailable { get; set; }

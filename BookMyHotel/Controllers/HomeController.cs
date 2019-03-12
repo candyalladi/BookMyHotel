@@ -52,7 +52,7 @@ namespace BookMyHotel.Controllers
                             {
                                 venue = await _tenantRepository.GetHotelDetailsAsync(tenant.TenantId);
                             }
-                            catch (Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement.ShardManagementException ex)
+                            catch (ShardManagementException ex)
                             {
                                 if (ex.ErrorCode == ShardManagementErrorCode.MappingDoesNotExist)
                                 {
