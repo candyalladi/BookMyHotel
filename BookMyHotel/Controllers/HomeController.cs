@@ -69,7 +69,7 @@ namespace BookMyHotel.Controllers
                             }
                             catch (Exception ex)
                             {
-                                _logger.LogError(0, ex, "Error in getting all tenants in Events Hub");
+                                _logger.LogError(0, ex, "Error in getting all tenants in Bookings Hub");
                                 return View("Error", ex.Message);
                             }
                         }

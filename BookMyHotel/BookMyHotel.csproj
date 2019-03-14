@@ -41,12 +41,14 @@
     <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
     <PackageReference Include="Remotion.Linq" Version="2.2.0" />
+    <PackageReference Include="Sendgrid" Version="9.10.0" />
     <PackageReference Include="System.Web.Providers.Core" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BookMyHotel.Tenants.Common\BookMyHotel_Tenants.Common.csproj" />
     <ProjectReference Include="..\BookMyHotel.Tenants.UserAppEF\BookMyHotel_Tenants.UserApp.EF.csproj" />
+    <ProjectReference Include="..\BookMyHotel_Tenants.EmailService\BookMyHotel_Tenants.EmailService.csproj" />
   </ItemGroup>
 
   <ItemGroup>

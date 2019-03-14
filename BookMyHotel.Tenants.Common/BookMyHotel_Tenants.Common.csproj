@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BookMyHotel.Tenants.UserAppEF\BookMyHotel_Tenants.UserApp.EF.csproj" />
+    <ProjectReference Include="..\BookMyHotel_Tenants.EmailService\BookMyHotel_Tenants.EmailService.csproj" />
   </ItemGroup>
 
 </Project>

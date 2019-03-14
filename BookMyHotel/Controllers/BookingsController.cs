@@ -62,19 +62,19 @@ namespace BookMyHotel.Controllers
                             var dnsQuery = _client.Query(venueInfo.DatabaseServerName, DnsClient.QueryType.A);
                             String serverRegion = dnsQuery.Answers.ARecords().ElementAt(0).DomainName;
 
-                            //Display events if tenant database is located in same region as app
+                            //Display bookings if tenant database is located in same region as app
                             if (serverRegion.Contains(_appRegion) && tenantStatus == "Online")
                             {
                                 SetTenantConfig(tenantDetails.TenantId, tenantDetails.TenantIdInString);
 
-                                var events = await _tenantRepository.GetOffersForTenant(tenantDetails.TenantId);
-                                return View(events);
+                                var offers = await _tenantRepository.GetOffersForTenant(tenantDetails.TenantId);
+                                return View(offers);
                             }
                             //Redirect to different app instance if tenant database is located in different region from app
                             else
                             {
                                 var pairedRegion = (serverRegion.Split('-'))[0].Split('1')[0];
-                                String recoveryAppInstance = "https://bookings-wingtip-dpt-" + pairedRegion + "-" + _configuration["User"] + ".azurewebsites.net/" + tenant;
+                                String recoveryAppInstance = "https://bookings-bookmyhotel-dpt-" + pairedRegion + "-" + _configuration["User"] + ".azurewebsites.net/" + tenant;
                                 return Redirect(recoveryAppInstance);
                             }
                         }
@@ -103,8 +103,8 @@ namespace BookMyHotel.Controllers
                     String tenantStatus = _utilities.GetTenantStatus(tenantModel.TenantId);
                     if (tenantStatus == "Online")
                     {
-                        var events = await _tenantRepository.GetOffersForTenant(tenantModel.TenantId);
-                        return View(events);
+                        var offers = await _tenantRepository.GetOffersForTenant(tenantModel.TenantId);
+                        return View(offers);
                     }
                     else
                     {
@@ -119,7 +119,7 @@ namespace BookMyHotel.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(0, ex, "Get events failed for tenant {tenant}", tenant);
+                _logger.LogError(0, ex, "Get offers failed for tenant {tenant}", tenant);
                 return View("Error", ex.Message);
             }
             return View("Error");

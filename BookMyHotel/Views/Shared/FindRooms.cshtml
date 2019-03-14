@@ -10,7 +10,7 @@
 @inject IViewLocalizer Localizer
 @model FindHotelViewModel
 @{
-    Layout = "_EventsLayout";
+    Layout = "_BookingsLayout";
 }
 @{
     ViewData["Title"] = @Localizer["Book Room"].Value;
@@ -47,13 +47,15 @@
             <img src=@tenantConfig.BlobImagePath class="img-responsive" style="width: 100%">
         </div>
         <div class="banner-home-left-fullWidth" style="left:11px; width:98.3%">
-            <div class="banner-caption"><span class="banner-splitter">@Model.BookingDetails.GuestName</span> @Model.BookingDetails.Checkin_Date.ToString("dddd MMM. dd, yyyy")</div>
-            <div class="banner-caption"><span class="banner-splitter">@Model.BookingDetails.GuestName</span> @Model.BookingDetails.Checkout_Date.ToString("dddd MMM. dd, yyyy")</div>
+            <div class="banner-caption"><span class="banner-splitter">@Model.Bookings.GuestName</span> 
+            @Model.Bookings.Checkin_Date.ToString("dddd MMM. dd, yyyy")
+             @Model.Bookings.Checkout_Date.ToString("dddd MMM. dd, yyyy")
+            </div>
         </div>
     </div>
 </div>
 <div class="col-xs-custom">
-    <h2>@Model.BookingDetails.RoomName</h2>
+    <h2>@Model.Rooms[0].RoomName</h2>
 </div>
 <div class="row row-underline-light" style="margin-left: 11px;">
 </div>
@@ -151,10 +153,10 @@
                     <div class="col-sm-12 col-md-6 ticket-info">
                         <h3>@Localizer["Booking Information"]</h3>
                         <ul>
-                            <li>Event: @Model.BookingDetails.GuestName</li>
+                            <li>Event: @Model.Bookings.GuestName</li>
                             <li>Venue: @tenantConfig.HotelName</li>
-                            <li>Date: @String.Format("{0:D}", Model.BookingDetails.Checkin_Date)</li>
-                            <li>Date: @String.Format("{0:D}", Model.BookingDetails.Checkout_Date)</li>
+                            <li>Date: @String.Format("{0:D}", Model.Bookings.Checkin_Date)</li>
+                            <li>Date: @String.Format("{0:D}", Model.Bookings.Checkout_Date)</li>
                         </ul>
                         <br />
                         <ul>
@@ -171,7 +173,7 @@
                     <div class="col-sm-12 col-md-6 ticket-info">
                         @using (Html.BeginForm("BookRooms", "FindRooms", FormMethod.Post, new { @class = "form-horizontal" }))
                         {
-                            <input type="hidden" name="eventId" value="@Model.BookingDetails.BookingId" />
+                            <input type="hidden" name="eventId" value="@Model.Bookings.BookingId" />
                             if (user != null)
                             {
                                 <input type="hidden" name="customerId" value="@user.GuestId" />
@@ -280,7 +282,7 @@
 
             $.ajax({
                 url: '@Url.Action("GetAvailableRooms", "FindRooms")',
-                data: { sectionId: selectedSection, eventId: @Model.BookingDetails.BookingId },
+                data: { sectionId: selectedSection, eventId: @Model.Bookings.BookingId },
                 contentType: 'application/json; charset=utf-8',
                 type: 'GET',
                 success: function(data) {

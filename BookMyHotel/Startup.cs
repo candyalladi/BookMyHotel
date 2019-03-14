@@ -3,8 +3,10 @@ using BookMyHotel.ViewModels;
 using BookMyHotel_Tenants.Common.Interfaces;
 using BookMyHotel_Tenants.Common.Repositories;
 using BookMyHotel_Tenants.Common.Utilities;
+using BookMyHotel_Tenants.EmailService;
 using BookMyHotel_Tenants.UserApp.EF.CatalogDB;
 using DnsClient;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -81,6 +83,13 @@ namespace BookMyHotel
             services.AddSingleton<ITenantRepository>(p => new TenantRepository(GetBasicSqlConnectionString()));
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddSingleton<ILookupClient>(p => new LookupClient());
+            services.AddSingleton<IEmailService>(p => new EmailService());
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .AddCookie(options =>
+                    {
+                        options.LoginPath = "/Account/Login";
+                        options.LogoutPath = "Account/Logout";
+                    });
 
             //create instance of utilities class
             services.AddTransient<IUtilities, Utilities>();
@@ -142,13 +151,7 @@ namespace BookMyHotel
             #endregion
 
             app.UseSession();
-            //adding the cookie middleware
-           //AddAuthentication.AddCookie(new CookieAuthenticationOptions()
-           // {
-           //     AuthenticationScheme = "MyCookieMiddlewareInstance",
-           //     AutomaticAuthenticate = true,
-           //     AutomaticChallenge = true
-           // });
+            app.UseCookiePolicy();           
 
             app.UseMvc(routes =>
             {
@@ -167,6 +170,7 @@ namespace BookMyHotel
                 routes.MapRoute(
                     name: "FindSeats",
                     template: "{tenant}/{controller=FindHotels}/{action=Index}/{id?}");
+               
             });
 
             //shard management

@@ -1,7 +1,9 @@
 ﻿using BookMyHotel.Tenants.Common.Interfaces;
+using BookMyHotel_Tenants.EmailService;
 using BookMyHotel_Tenants.UserApp.EF.TenantsDbEFCore;
 using Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -17,6 +19,15 @@ namespace BookMyHotel_Tenants.Common.Utilities
     /// </summary>
     public class Utilities : IUtilities
     {
+        private readonly IEmailService _emailService;
+        private readonly IConfiguration _configuration;
+
+        public Utilities(IEmailService emailService, IConfiguration configuration)
+        {
+            _emailService = emailService;
+            _configuration = configuration;
+        }
+
         #region Public methods
 
         /// <summary>
@@ -45,17 +56,20 @@ namespace BookMyHotel_Tenants.Common.Utilities
                 var result = await Sharding.RegisterNewShard(tenant, tenantId, tenantServerConfig.TenantServer, databaseConfig.DatabaseServerPort, catalogConfig.ServicePlan);
                 if (result)
                 {
-                    // resets all tenants' event dates
                     if (resetEventDate)
                     {
                         #region EF6
                         try
                         {
-                            //use EF6 since execution of Stored Procedure in EF Core for anonymous return type is not supported yet
                             using (var context = new TenantContext(Sharding.ShardMap, tenantId, connectionString.ConnectionString))
                             {
                                 context.Database.ExecuteSqlCommand("sp_ResetBookingDates");
                             }
+
+                            var emailDetails = _configuration.GetSection("EmailNotification");
+                            var fromEmailId = emailDetails["FromServiceEmailId"];
+                            var ServiceName = emailDetails["ServiceName"];
+                            _emailService.SendEmailToTenants(fromEmailId, ServiceName,"test@email.com","Pramati");
                         }
                         catch (ShardManagementException ex)
                         {
@@ -71,15 +85,9 @@ namespace BookMyHotel_Tenants.Common.Utilities
                             Console.WriteLine(ex.ToString());
                         }
                         #endregion
-
-                        #region EF core
-                        //https://github.com/aspnet/EntityFramework/issues/7032
-                        //using (var context = new TenantDbContext(Sharding.ShardMap, tenantId, connectionString))
-                        //{
-                        //     context.Database.ExecuteSqlCommand("sp_ResetEventDates");
-                        //}
-                        #endregion
+                       
                     }
+
                 }
             }
         }

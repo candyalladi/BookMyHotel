@@ -3,6 +3,7 @@ using BookMyHotel.Tenants.Common.Interfaces;
 using BookMyHotel_Tenants.Common.Interfaces;
 using BookMyHotel_Tenants.Common.Models;
 using BookMyHotel_Tenants.Common.Utilities;
+using BookMyHotel_Tenants.EmailService;
 using DnsClient;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +36,7 @@ namespace BookMyHotelTests.BookMyHotel_Tenants.UserApp.Test.ControllerTests
             var mockCatalogRepo = new Mock<ICatalogRepository>();
             var mockConfig = new Mock<IConfiguration>();
             var mockDnsClient = new Mock<ILookupClient>();
+            var mockEmailService = new Mock<IEmailService>();
 
             var mock = new Mock<ILogger<FindRoomsController>>();
             ILogger<FindRoomsController> mocklogger = mock.Object;
@@ -65,7 +67,7 @@ namespace BookMyHotelTests.BookMyHotel_Tenants.UserApp.Test.ControllerTests
             httpContext = mockHttpContext.Object;
 
             _findRoomsController = new FindRoomsController(mockTenantRepo.Object, mockCatalogRepo.Object, roomsStringLocalizer, stringLocalizer,
-                _logger, mockConfig.Object, mockDnsClient.Object);
+                _logger, mockConfig.Object, mockDnsClient.Object, mockEmailService.Object);
 
             _findRoomsController.ControllerContext = new ControllerContext();
             _findRoomsController.ControllerContext.HttpContext = new DefaultHttpContext();

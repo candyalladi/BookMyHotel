@@ -13,7 +13,7 @@
     <h3>
         <span class="box-light-splitter">@Localizer["my"]</span>@Localizer["bookings"]
     </h3>
-    <p>@Localizer["Update your list of favorites and <br />never miss an event!"]</p>
+    <p>@Localizer["Update your list of rooms!"]</p>
     @{
         var users = Context.Session.GetObjectFromJson<List<GuestModel>>("SessionUsers");
         GuestModel user = null;

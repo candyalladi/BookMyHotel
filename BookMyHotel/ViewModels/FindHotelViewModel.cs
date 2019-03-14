@@ -8,9 +8,10 @@ namespace BookMyHotel.ViewModels
 {
     public class FindHotelViewModel
     {
-        public BookingModel BookingDetails { get; set; }
+        public HotelModel HotelDetails { get; set; }
         public int RoomId { get; set; }
         public List<RoomModel> Rooms { get; set; }
+        public BookingModel Bookings { get; set; }
         public int RoomsAvailable { get; set; }
     }
 }

@@ -6,6 +6,8 @@ using BookMyHotel.Tenants.Common.Interfaces;
 using BookMyHotel.ViewModels;
 using BookMyHotel_Tenants.Common.Interfaces;
 using BookMyHotel_Tenants.Common.Models;
+using BookMyHotel_Tenants.EmailService;
+using DnsClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
@@ -22,11 +24,12 @@ namespace BookMyHotel.Controllers
         private readonly ICatalogRepository _catalogRepository;
         private readonly IStringLocalizer<FindRoomsController> _localizer;
         private readonly ILogger _logger;
-        private readonly DnsClient.ILookupClient _client;
+        private readonly ILookupClient _client;
+        private readonly IEmailService _emailService;
         #endregion
 
         public FindRoomsController(ITenantRepository tenantRepository, ICatalogRepository catalogRepository, IStringLocalizer<FindRoomsController> localizer, IStringLocalizer<BaseController> baseLocalizer,
-            ILogger<FindRoomsController> logger, IConfiguration configuration, DnsClient.ILookupClient client)
+            ILogger<FindRoomsController> logger, IConfiguration configuration, ILookupClient client, IEmailService emailService)
             : base(baseLocalizer, tenantRepository, configuration, client)
         {
             _tenantRepository = tenantRepository;
@@ -34,6 +37,7 @@ namespace BookMyHotel.Controllers
             _localizer = localizer;
             _logger = logger;
             _client = client;
+            _emailService = emailService;
         }
 
         [Route("{FindRooms}")]
@@ -48,23 +52,23 @@ namespace BookMyHotel.Controllers
                     {
                         SetTenantConfig(tenantDetails.TenantId, tenantDetails.TenantIdInString);
 
-                        var eventDetails = await _tenantRepository.GetRoomAsync(roomId, tenantDetails.TenantId);
+                        var hotelDetails = await _tenantRepository.GetHotelDetailsAsync(tenantDetails.TenantId);
 
-                        if (eventDetails != null)
+                        if (hotelDetails != null)
                         {
-                            var eventSections = await _tenantRepository.GetRoomPricesAsync(eventId, tenantDetails.TenantId);
-                            var seatSectionIds = eventSections.Select(i => i.RoomId).ToList();
+                            var roomPrices = await _tenantRepository.GetRoomPricesAsync(eventId, tenantDetails.TenantId);
+                            var roomPricesIds = roomPrices.Select(i => i.RoomId).ToList();
 
-                            var seatSections = await _tenantRepository.GetRoomsAsync(seatSectionIds, tenantDetails.TenantId);
-                            if (seatSections != null)
+                            var rooms = await _tenantRepository.GetRoomsAsync(roomPricesIds, tenantDetails.TenantId);
+                            if (rooms != null)
                             {
-                                var ticketsSold = await _tenantRepository.GetBookingsSold(seatSections[0].RoomId, eventId, tenantDetails.TenantId);
-
+                                var bookingsSold = await _tenantRepository.GetBookingsSold(rooms[0].RoomId, eventId, tenantDetails.TenantId);
                                 FindHotelViewModel viewModel = new FindHotelViewModel
                                 {
-                                    //BookingDetails = eventDetails,
-                                    //Rooms = eventDetails,
-                                    //RoomsAvailable = (seatSections[0].SeatRows * seatSections[0].SeatsPerRow) - ticketsSold
+                                    HotelDetails = hotelDetails,
+                                    Rooms = rooms,
+
+                                    RoomsAvailable = (hotelDetails.NumberOfFloors * hotelDetails.RoomsPerFloor) - bookingsSold
                                 };
 
                                 return View(viewModel);
@@ -85,7 +89,7 @@ namespace BookMyHotel.Controllers
             return RedirectToAction("Index", "Bookings", new { tenant });
         }
 
-        [Route("GetAvailableSeats")]
+        [Route("GetAvailableRooms")]
         public async Task<IActionResult> GetAvailableRooms(string tenant, int sectionId, int eventId)
         {
             try
@@ -98,9 +102,9 @@ namespace BookMyHotel.Controllers
                     var hotelDetails = await _tenantRepository.GetHotelDetailsAsync(tenantDetails.TenantId);
                     var sectionDetails = await _tenantRepository.GetRoomAsync(sectionId, tenantDetails.TenantId);
                     var totalRooms = hotelDetails.NumberOfFloors * hotelDetails.RoomsPerFloor;
-                    var ticketsSold = await _tenantRepository.GetBookingsSold(sectionId, eventId, tenantDetails.TenantId);
+                    var bookingsSold = await _tenantRepository.GetBookingsSold(sectionId, eventId, tenantDetails.TenantId);
 
-                    var availableRooms = totalRooms - ticketsSold;
+                    var availableRooms = totalRooms - bookingsSold;
                     return Content(availableRooms.ToString());
                 }
                 else
@@ -110,7 +114,7 @@ namespace BookMyHotel.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(0, ex, "GetAvailableSeats failed for tenant {tenant} and event {eventId}", tenant, eventId);
+                _logger.LogError(0, ex, "GetAvailableRooms failed for tenant {tenant} and event {eventId}", tenant, eventId);
                 return Content("0");
             }
         }
@@ -129,20 +133,36 @@ namespace BookMyHotel.Controllers
                     TotalPrice = roomPrice
                 };
 
-                var tenantDetails = (_catalogRepository.GetTenantAsync(tenant)).Result;
+                var tenantDetails = (_catalogRepository.GetTenantAsync(tenant)).Result;                
                 if (tenantDetails != null)
                 {
                     SetTenantConfig(tenantDetails.TenantId, tenantDetails.TenantIdInString);
 
+                    var hotelDetails = await _tenantRepository.GetHotelDetailsAsync(tenantDetails.TenantId);
                     var bookingsPurchaseId = await _tenantRepository.AddBookinPurchase(ticketPurchaseModel, tenantDetails.TenantId);
 
                     List<BookingModel> ticketsModel = BuildTicketModel(bookingId, roomId, roomsCount, bookingsPurchaseId);
                     purchaseResult = await _tenantRepository.AddBookings(ticketsModel, tenantDetails.TenantId);
 
+                    var guest = HttpContext.Session.GetObjectFromJson<List<GuestModel>>("SessionUsers");
+
                     if (purchaseResult)
+                    {
                         DisplayMessage(_localizer[$"You have successfully booked {roomsCount} rooms(s)."], "Confirmation");
+
+                        var fromHotelEmailId = hotelDetails.AdminEmail;
+                        var fromHotelName = hotelDetails.HotelName;
+                        var toEmailAddress = guest[0].Email;
+                        var fullName = $"{guest[0].FirstName} {guest[0].LastName}";
+                        var confirmMessage = _localizer[$"You have successfully booked {roomsCount} rooms(s)."];
+
+                        _emailService.SendEmailToGuests(fromHotelEmailId, fromHotelName, toEmailAddress, fullName, confirmMessage);
+                        
+                    }
                     else
+                    {
                         DisplayMessage(_localizer["Failed to book rooms."], "Error");
+                    }
                 }
                 else
                 {
