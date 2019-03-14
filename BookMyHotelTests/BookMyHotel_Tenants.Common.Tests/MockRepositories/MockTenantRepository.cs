@@ -165,7 +165,7 @@ namespace BookMyHotelTests.BookMyHotel_Tenants.Common.Tests
             return RoomModels[0];
         }
 
-        public async Task<int> AddBookinPurchase(BookingPurchaseModel bookingPurchaseModel, int tenantId)
+        public async Task<int> AddBookingPurchase(BookingPurchaseModel bookingPurchaseModel, int tenantId)
         {
             BookingPurchaseModels.Add(bookingPurchaseModel);
             return bookingPurchaseModel.BookingPurchaseId;

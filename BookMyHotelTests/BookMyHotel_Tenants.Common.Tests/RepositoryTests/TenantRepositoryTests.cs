@@ -14,7 +14,7 @@ namespace BookMyHotelTests.BookMyHotel_Tenants.Common.Tests.RepositoryTests
     public class TenantRepositoryTests
     {
         private ITenantRepository _tenantRepository;
-        private const int _tenantId = 1368421345;
+        private const int _tenantId = 1;
         private const int _numberOfBookingPurchases = 1;
         private const int _bookingsSold = 1;
 
@@ -150,7 +150,7 @@ namespace BookMyHotelTests.BookMyHotel_Tenants.Common.Tests.RepositoryTests
                 TotalPrice = 5
             };
 
-            var result = (_tenantRepository.AddBookinPurchase(ticketPurchaseModel, _tenantId)).Result;
+            var result = (_tenantRepository.AddBookingPurchase(ticketPurchaseModel, _tenantId)).Result;
 
             Assert.Equal(1, _numberOfBookingPurchases);
             Assert.Equal(12, result);

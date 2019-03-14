@@ -1,5 +1,6 @@
 ﻿using BookMyHotel.Controllers;
 using BookMyHotel.Tenants.Common.Interfaces;
+using BookMyHotel.ViewModels;
 using BookMyHotel_Tenants.Common.Interfaces;
 using BookMyHotel_Tenants.Common.Models;
 using BookMyHotel_Tenants.Common.Utilities;
@@ -50,15 +51,17 @@ namespace BookMyHotelTests.BookMyHotel_Tenants.UserApp.Test.ControllerTests
             IStringLocalizer<FindRoomsController> roomsStringLocalizer = mockFindRoomsLocalizer.Object;
 
             var roomPrices = GetRoomPrices();
-            mockTenantRepo.Setup(repo => repo.GetRoomAsync(1, 12345)).Returns(GetRoomModel());
-            mockTenantRepo.Setup(repo => repo.GetRoomPricesAsync(1, 12345)).Returns(roomPrices);            
+
+            mockTenantRepo.Setup(repo => repo.GetRoomAsync(1, 1)).Returns(GetRoomModel());
+            mockTenantRepo.Setup(repo => repo.GetRoomPricesAsync(1, 1)).Returns(roomPrices);
 
             var seatSectionIds = roomPrices.Result.ToList().Select(i => i.RoomId).ToList();
-            mockTenantRepo.Setup(r => r.GetRoomsAsync(seatSectionIds, 12345)).Returns(GetRooms());
-            mockTenantRepo.Setup(r => r.GetRoomAsync(1, 12345)).Returns(GetRoomModel());
-            mockTenantRepo.Setup(r => r.GetBookingsSold(1, 1, 12345)).Returns(GetBookingsPurchased());
-            mockTenantRepo.Setup(r => r.AddBookings(GetBookingsModel(), 12345)).Returns(GetBooleanValue());
-            mockTenantRepo.Setup(r => r.AddBookinPurchase(GetBookingPurchaseModel(), 12345)).Returns(GetBookingId());
+            mockTenantRepo.Setup(r => r.GetRoomsAsync(seatSectionIds, 1)).Returns(GetRooms());
+            mockTenantRepo.Setup(r => r.GetRoomAsync(1, 1)).Returns(GetRoomModel());
+            mockTenantRepo.Setup(r => r.GetBookingsSold(1, 1, 1)).Returns(GetBookingsPurchased());
+            mockTenantRepo.Setup(r => r.AddBookings(GetBookingsModel(), 1)).Returns(GetBooleanValue());
+            mockTenantRepo.Setup(r => r.AddBookingPurchase(GetBookingPurchaseModel(), 1)).Returns(GetBookingId());
+            mockTenantRepo.Setup(r => r.GetHotelDetailsAsync(1)).Returns(GetHotelDetails());
 
             mockCatalogRepo.Setup(cat => cat.GetTenantAsync("tenantName")).Returns(GetTenant());            
 
@@ -73,18 +76,7 @@ namespace BookMyHotelTests.BookMyHotel_Tenants.UserApp.Test.ControllerTests
             _findRoomsController.ControllerContext.HttpContext = new DefaultHttpContext();
         }
 
-        private async Task<TenantModel> GetTenant()
-        {
-            return new TenantModel
-            {
-                TenantName = "tenantName",
-                CityName = "HYD",
-                HotelName = "Pramati",
-                ServicePlan = "Standard",
-                TenantId = 1,
-                TenantIdInString = "1"
-            };
-        }
+       
 
         [Fact]
         public void FindSeatsTests_BookingId_Null()
@@ -105,7 +97,7 @@ namespace BookMyHotelTests.BookMyHotel_Tenants.UserApp.Test.ControllerTests
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result.Result);
-            var model = Assert.IsAssignableFrom<IEnumerable<BookingModel>>(viewResult.Model);
+            var model = Assert.IsAssignableFrom<IEnumerable<FindHotelViewModel>>(viewResult.Model);
             Assert.Single(model);
         }
 
@@ -254,6 +246,34 @@ namespace BookMyHotelTests.BookMyHotel_Tenants.UserApp.Test.ControllerTests
                     HotelName = "Novatel"
                 }
             };
-        }        
+        }
+
+        private async Task<HotelModel> GetHotelDetails()
+        {
+            return new HotelModel
+            {
+                CityCode = "HYD",
+                HotelType = "5 Star",
+                HotelName = "Pramati",
+                PostalCode = "123",
+                AdminEmail = "admin@email.com",
+                AdminPassword = "password",
+                DatabaseName = "HotelDB",
+                DatabaseServerName = @"PRINHYLTPDL1249\SQLEXPRESS"
+            };
+        }
+
+        private async Task<TenantModel> GetTenant()
+        {
+            return new TenantModel
+            {
+                TenantName = "tenantName",
+                CityName = "HYD",
+                HotelName = "Pramati",
+                ServicePlan = "Standard",
+                TenantId = 1,
+                TenantIdInString = "1"
+            };
+        }
     }
 }

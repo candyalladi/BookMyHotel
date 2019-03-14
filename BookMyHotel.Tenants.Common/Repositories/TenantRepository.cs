@@ -27,7 +27,9 @@ namespace BookMyHotel_Tenants.Common.Repositories
             _connectionString = connectionString;
         }
 
-        public async Task<int> AddBookinPurchase(BookingPurchaseModel bookingPurchaseModel, int tenantId)
+        #region Rooms/Bookings/Guests
+
+        public async Task<int> AddBookingPurchase(BookingPurchaseModel bookingPurchaseModel, int tenantId)
         {
             using (var context = CreateContext(tenantId))
             {
@@ -197,17 +199,76 @@ namespace BookMyHotel_Tenants.Common.Repositories
             }
         }
 
+        public async Task<bool> AddBookings(List<BookingModel> bookingModels, int tenantId)
+        {
+            using (var context = CreateContext(tenantId))
+            {
+                foreach (BookingModel bookingModel in bookingModels)
+                {
+                    context.Bookings.Add(bookingModel.ToBookingsEntity());
+                }
+                await context.SaveChangesAsync();
+            }
+            return true;
+        }
+
+        #endregion
+
+        #region Venues
+
+        public async Task<HotelModel> GetHotelDetails(int tenantId)
+        {
+            using (var context = CreateContext(tenantId))
+            {
+                //get database name
+                string databaseName, databaseServerName;
+                PointMapping<int> mapping;
+
+                if (Sharding.ShardMap.TryGetMappingForKey(tenantId, out mapping))
+                {
+                    using (SqlConnection sqlConn = Sharding.ShardMap.OpenConnectionForKey(tenantId, _connectionString))
+                    {
+                        databaseName = sqlConn.Database;
+                        databaseServerName = sqlConn.DataSource.Split(':').Last().Split(',').First();
+                    }
+
+                    var venue = await context.Hotels.FirstOrDefaultAsync();
+
+                    if (venue != null)
+                    {
+                        var venueModel = venue.ToHotelModel();
+                        venueModel.DatabaseName = databaseName;
+                        venueModel.DatabaseServerName = databaseServerName;
+                        return venueModel;
+                    }
+                }
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region VenueTypes
+
+        public async Task<HotelTypeModel> GetHotelType(string hotelType, int tenantId)
+        {
+            using (var context = CreateContext(tenantId))
+            {
+                var venueTypeDetails = await context.HotelTypes.FirstOrDefaultAsync(i => i.HotelType == hotelType);
+
+                return venueTypeDetails?.ToHotelTypeModel();
+            }
+        }
+
+        #endregion
+
         #region Private methods
 
         private TenantDbContext CreateContext(int tenantId)
         {
             return new TenantDbContext(Sharding.ShardMap, tenantId, _connectionString);
         }
-
-        public Task<bool> AddBookings(List<BookingModel> bookingModel, int tenantId)
-        {
-            throw new NotImplementedException();
-        }
+        
         #endregion
     }
 }

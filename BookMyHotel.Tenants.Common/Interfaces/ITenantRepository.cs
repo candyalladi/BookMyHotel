@@ -42,7 +42,7 @@ namespace BookMyHotel.Tenants.Common.Interfaces
 
         #region BookingPurchases
 
-        Task<int> AddBookinPurchase(BookingPurchaseModel bookingPurchaseModel, int tenantId);
+        Task<int> AddBookingPurchase(BookingPurchaseModel bookingPurchaseModel, int tenantId);
 
         #endregion
 

@@ -63,15 +63,17 @@ namespace BookMyHotel.Controllers
                             if (rooms != null)
                             {
                                 var bookingsSold = await _tenantRepository.GetBookingsSold(rooms[0].RoomId, eventId, tenantDetails.TenantId);
-                                FindHotelViewModel viewModel = new FindHotelViewModel
+                                List<FindHotelViewModel> hotelsList = new List<FindHotelViewModel>
                                 {
-                                    HotelDetails = hotelDetails,
-                                    Rooms = rooms,
+                                    new FindHotelViewModel
+                                    {
+                                        HotelDetails = hotelDetails,
+                                        Rooms = rooms,
 
-                                    RoomsAvailable = (hotelDetails.NumberOfFloors * hotelDetails.RoomsPerFloor) - bookingsSold
+                                        RoomsAvailable = (hotelDetails.NumberOfFloors * hotelDetails.RoomsPerFloor) - bookingsSold
+                                    }
                                 };
-
-                                return View(viewModel);
+                                return View(hotelsList);
                             }
                         }
                     }
@@ -139,7 +141,7 @@ namespace BookMyHotel.Controllers
                     SetTenantConfig(tenantDetails.TenantId, tenantDetails.TenantIdInString);
 
                     var hotelDetails = await _tenantRepository.GetHotelDetailsAsync(tenantDetails.TenantId);
-                    var bookingsPurchaseId = await _tenantRepository.AddBookinPurchase(ticketPurchaseModel, tenantDetails.TenantId);
+                    var bookingsPurchaseId = await _tenantRepository.AddBookingPurchase(ticketPurchaseModel, tenantDetails.TenantId);
 
                     List<BookingModel> ticketsModel = BuildTicketModel(bookingId, roomId, roomsCount, bookingsPurchaseId);
                     purchaseResult = await _tenantRepository.AddBookings(ticketsModel, tenantDetails.TenantId);
