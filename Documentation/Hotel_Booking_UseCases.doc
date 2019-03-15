@@ -1,0 +1,104 @@
+https://www.geeksforgeeks.org/design-online-hotel-booking-system-like-oyo-rooms/
+https://bookassist.org/news/article/bookassist-announces-new-booking-engine-architecture-for-2017/en/
+https://www.quora.com/How-do-I-build-an-online-hotel-booking-system
+https://blog.capterra.com/top-free-and-open-source-hotel-management-software-solutions-compared/
+https://greenice.net/develop-custom-hotel-management-system/
+https://www.ezeereservation.com/demo/
+https://usersnap.com/blog/cloud-based-saas-architecture-fundamentals/
+https://www.youtube.com/watch?v=bjMq_2pnG7Q
+https://greenice.net/develop-custom-hotel-management-system/
+https://www.ezeereservation.com/demo/
+http://www.clusterdb.com/mongodb/powering-microservices-with-mongodb-docker-kubernetes-kafka
+https://github.com/webkul/hotelcommerce
+https://books.agiliq.com/projects/django-multi-tenant/en/latest/
+https://docs.microsoft.com/en-us/azure/architecture/multitenant-identity/web-api
+https://setupmyhotel.com/train-my-hotel-staff/front-office-training/76-classification-of-hotels.html
+https://www.tutorialspoint.com/hotel_housekeeping/types_hotels_and_rooms.htm
+https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/app-service-web-app/multi-region
+https://docs.microsoft.com/en-us/azure/sendgrid-dotnet-how-to-send-email
+https://docs.microsoft.com/en-us/azure/load-balancer/tutorial-load-balancer-basic-internal-portal
+https://docs.microsoft.com/en-us/azure/sql-database/saas-dbpertenant-wingtip-app-overview
+https://docs.microsoft.com/en-us/azure/sql-database/elastic-jobs-overview
+https://www.arrowscan.com/dot-net-flow-chart/common-web-application-architectures-microsoft-docs/
+https://benjii.me/2016/07/using-sessions-and-httpcontext-in-aspnetcore-and-mvc-core/
+https://medium.freecodecamp.org/an-awesome-guide-on-how-to-build-restful-apis-with-asp-net-core-87b818123e28
+https://medium.com/@alfredbeiley/benefits-of-choosing-multi-tenant-architecture-for-saas-app-47e753d0efff
+https://www.arrowscan.com/dot-net-flow-chart/common-web-application-architectures-microsoft-docs/
+https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/app-service-web-app/multi-region
+https://docs.microsoft.com/en-us/azure/sql-database/saas-tenancy-wingtip-app-guidance-tips
+https://docs.microsoft.com/en-us/aspnet/core/migration/1x-to-2x/identity-2x?view=aspnetcore-2.2
+
+
+Hotel Booking System: bookmyhotel.com
+==================================
+1.On Board a new hotel in the System : HotelsController (Owner/Manager)
+	a. Should contain details of the room types	and number of rooms per type
+	b. Should contain details of amenities (user and admin)
+	c. Should contain details of available rooms (user)
+	d. Should contain details of occupied rooms (admin)
+	e. Should contain details of maintenance rooms (admin)
+	f. MongoDB : Hotel --> Rooms (Standard, Delux, Luxury etc), Hotel --> Amenities (Gym, Spa, Pool, Bar etc)
+
+2.Search Hotels : SearchController
+	a. User should able to search hotels based on City (user)
+	b. User should able to search based on check-in and check-out dates
+	c. User should able to search based on City, check-in and check-out dates.
+	d. User should able to search based on Rooms and No. of Guests.
+	e. Search Should return complete details as per user criteria (user) and include festive offers in case available.
+	f. After search, navigate to hotel details. 
+	g. Guest should refine the search again based on Price range, Hotel ratings, Hotel Type, Amenities
+	h. MongoDB : Hotels -->rooms (type and status i.e. available or not), Hotel --> Festive Offers. Hotel --> Hotel Type
+
+3.Book rooms : BookingsController
+	a. User should able to select the rooms based on search results.
+	b. User should able to enter the contact information.
+	c. User should get the status of the booking i.e. booked or not booked
+	d. User should be updated with Rooms Information i.e. Room Number, Room Name etc
+	e. User should be notified either thru email or sms or both.
+	f. User should able to cancel the booking.
+	f. MongoDB : User --> Rooms ( room number, room name, room status etc)
+
+4.Payment : PaymentsController
+	a. User should able to pay either fully, partially or not at all initially.
+	b. User should settle full amount if not paid earlier or partial amount if paid earlier.
+	c. User should avail festive offer if hotel is offering.
+	d. User should able to see if any offers at time of search.
+	e. User payment details should be tagged to room number. (admin)
+	f. MongoDB --> Payment --> User Id, roomId, PaymentStatus, Amount Paid (admin)
+
+5.User Details : GuestsController
+	a. User should able to enter details during booking.
+	b. Payment details of the user is displayed (admin).
+	c. Room Details like room number, room name etc should be displayed (admin).
+	d. Services availed by the user (admin).
+	e. updated room number if user changed his/her room due to maintenance (user and admin).
+	f. User should able to see the complete details filled by him during the payment process.
+	f. MongoDB : User --> Rooms, User --> Payment
+
+6.Room Management : HouseKeepingController (admin level only)
+	a. Admin should able to see the details of Available Rooms ( Green Color Code)
+	b. Admin should able to see the details of Occupied Rooms (Red Color code)
+	c. Admin should able to see the details of Maintenance Rooms (Yellow Color code)
+	d. Admin should able to see the details of the reserved Rooms (Orange Color code)
+	e. Admin should able to change the rooms details of the Guests, if their rooms need some maintenance.
+	f. Admin should able to see the payment details of the guest.
+	g. Admin should able to track the services availed by Guest which are not included during booking.
+	h. MongoDB : HouseKeeping --> Rooms, Services (Laundry etc), user
+	
+
+Technology Stack:
+=================
+1. Azure Sql Database 
+2. Sql Elastic Pools
+3. DNS alias
+4. Kafka Message Broker
+5. .NET Core 2.1
+6. EF Core
+7. C#
+
+Sections - Rooms
+Events - Bookings
+
+
+	
+	
